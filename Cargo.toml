@@ -1,0 +1,8 @@
+[package]
+name = "sandbox"
+version = "0.1.0"
+authors = ["Thomas van den Bighelaar <tmsvdb80@gmail.com>"]
+
+[dependencies]
+piston_window = "0.61.0"
+find_folder = "*"
