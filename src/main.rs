@@ -3,15 +3,25 @@ extern crate find_folder;
 
 use piston_window::*;
 
+mod ecs;
+use ecs::*;
+
 mod draw;
 use draw::*;
 
 mod ships;
 use ships::*;
+use ships::scout::*;
 
 //use find_folder::*;
 
 fn main() {
+
+    /*
+        Create new ECS engine
+    */
+    //let ecs = ECS::new();
+
     /*
         create new piston window
     */
