@@ -13,6 +13,13 @@ mod ships;
 use ships::*;
 use ships::scout::*;
 
+use std::time::{Duration, Instant};
+
+mod assets;
+use assets::*;
+
+
+
 //use find_folder::*;
 
 fn main() {
@@ -32,32 +39,9 @@ fn main() {
         .build()
         .unwrap_or_else(|e| { panic!("Failed to build PistonWindow: {}", e) });
 
-    /*
-        Load text from assets folder
-    */
-
-    let assets: std::path::PathBuf = find_folder::Search::ParentsThenKids(3, 3).for_folder("assets").expect("folder [assets] not found!");
-    let ref font: std::path::PathBuf = assets.join("font.ttf");
-    if !font.exists() { panic!("file [{}] not found!", font.to_str().unwrap()) }
-    let factory = window.factory.clone();
-    let glyphs = Glyphs::new(font, factory).unwrap();
-
-
-    /*
-        Load image from assets folder
-    */
-
-    let assets = find_folder::Search::ParentsThenKids(3, 3)
-        .for_folder("assets").expect("folder [assets] not found!");
-    let rust_logo = assets.join("rust.png");
-    if !rust_logo.exists() { panic!("file [{}] not found!", font.to_str().unwrap()) }
-    let rust_logo = Texture::from_path(
-            &mut window.factory,
-            &rust_logo,
-            Flip::None,
-            &TextureSettings::new()
-        ).unwrap();
-
+    let mut assets : Assets = Assets::new(&window);
+    let glyphs = assets.load_font ("font.ttf");
+    let rust_logo = assets.load_image ("rust.png");
     /*
         Create custom graphic
     */
@@ -68,9 +52,25 @@ fn main() {
         Execute gameloop
     */
 
+    let mut time = Instant::now();
+    let mut count = 0;
+    let mut fps: String = "fps: 0".into();
+    let sample_rate : u64 = 25;
+
     while let Some(e) = window.next() {
+
+        if count > sample_rate {
+            fps = format!("fps: {}", sample_rate as f64 * (1.0 / ((time.elapsed().subsec_nanos() as f64)/1_000_000_000.0)));
+            time = Instant::now();
+            count = 0;
+        }
+        else {
+            count += 1;
+        }
         window.draw_2d(&e, |c, g| {
             clear([0.5, 0.5, 1.0, 1.0], g);
+            image(&rust_logo.texture, c.transform, g);
+            text([1.0, 0.0, 0.0, 1.0], 30, &fps, &mut glyphs.glyphs, c.transform.trans(10.0, 100.0), g);
             ship.draw(c, g);
         });
 
