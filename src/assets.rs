@@ -12,44 +12,29 @@ pub struct ImageAsset{
     pub name: String,
 }
 
-pub struct Assets<'a> {
-    window: &'a PistonWindow,
-    images: Vec<ImageAsset>,
-    fonts: Vec<FontAsset>,
-}
+pub struct Assets {}
 
-impl <'a >Assets<'a> {
-    pub fn new (window: &'a PistonWindow) -> Assets<'a> {
-        Assets {
-            window: window,
-            images: Vec::new(),
-            fonts: Vec::new(),
-        }
-    }
-
-    pub fn load_image (&mut self, file_name: &str) -> &ImageAsset {
-        //let window = &mut self.window.factory;
-        self.images.push(ImageAsset{
+impl Assets {
+    pub fn load_image (window: &PistonWindow, file_name: &str) -> ImageAsset {
+        ImageAsset {
             texture: Texture::from_path(
-                &mut self.window.factory.clone(),
+                &mut window.factory.clone(),
                 Assets::load_from_file(file_name),
                 Flip::None,
                 &TextureSettings::new()
             ).unwrap(),
             name: String::from(file_name),
-        });
-        return &self.images[self.images.len()-1];
+        }
     }
 
-    pub fn load_font (&mut self, file_name: &str) -> &FontAsset {
-        self.fonts.push(FontAsset {
+    pub fn load_font (window: &PistonWindow, file_name: &str) -> FontAsset {
+        FontAsset {
             glyphs: Glyphs::new(
                 Assets::load_from_file(file_name),
-                self.window.factory.clone()
+                window.factory.clone()
             ).unwrap(),
             name: String::from(file_name),
-        });
-        return &self.fonts[self.fonts.len()-1];
+        }
     }
 
     fn load_from_file(file_name: &str) -> ::std::path::PathBuf {

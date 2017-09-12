@@ -39,9 +39,8 @@ fn main() {
         .build()
         .unwrap_or_else(|e| { panic!("Failed to build PistonWindow: {}", e) });
 
-    let mut assets : Assets = Assets::new(&window);
-    let glyphs = assets.load_font ("font.ttf");
-    let rust_logo = assets.load_image ("rust.png");
+    let mut glyphs: FontAsset = Assets::load_font (&window, "font.ttf");
+    let rust_logo: ImageAsset = Assets::load_image (&window, "rust.png");
     /*
         Create custom graphic
     */
